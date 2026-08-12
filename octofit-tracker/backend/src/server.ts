@@ -1,19 +1,19 @@
-import express from 'express';
+import app from './app.js';
 import db from './config/database.js';
 
-const app = express();
 const port = Number(process.env.PORT || 8000);
 
-app.use(express.json());
-
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', message: 'OctoFit Tracker backend is running' });
-});
-
-app.get('/api/ping', (_req, res) => {
-  res.send('pong');
-});
+if (db) {
+  db.on('error', (error) => {
+    console.error('MongoDB connection error:', error);
+  });
+}
 
 app.listen(port, () => {
-  console.log(`Backend server listening on http://localhost:${port}`);
+  const codespaceName = process.env.CODESPACE_NAME;
+  const baseUrl = codespaceName
+    ? `https://${codespaceName}-8000.app.github.dev`
+    : `http://localhost:${port}`;
+
+  console.log(`Backend server listening on ${baseUrl}`);
 });
