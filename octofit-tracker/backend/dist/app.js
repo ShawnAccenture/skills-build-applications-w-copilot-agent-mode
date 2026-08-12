@@ -1,4 +1,6 @@
 import express from 'express';
+import './config/database.js';
+import { Activity, LeaderboardEntry, Team, User, Workout } from './models.js';
 const app = express();
 app.use(express.json());
 const codespaceName = process.env.CODESPACE_NAME;
@@ -12,6 +14,15 @@ const endpoints = {
     leaderboard: '/api/leaderboard/',
     workouts: '/api/workouts/',
 };
+const readCollection = async (model, key) => {
+    const items = await model.find().lean();
+    return {
+        endpoint: endpoints[key],
+        count: items.length,
+        items,
+        baseUrl,
+    };
+};
 app.get('/api/health', (_req, res) => {
     res.json({
         status: 'ok',
@@ -22,39 +33,49 @@ app.get('/api/health', (_req, res) => {
 app.get('/api/ping', (_req, res) => {
     res.json({ message: 'pong' });
 });
-app.get('/api/users/', (_req, res) => {
-    res.json({
-        message: 'Users endpoint is ready',
-        endpoint: endpoints.users,
-        baseUrl,
-    });
+app.get('/api/users/', async (_req, res) => {
+    try {
+        const payload = await readCollection(User, 'users');
+        res.json(payload);
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Unable to load users.', details: String(error) });
+    }
 });
-app.get('/api/teams/', (_req, res) => {
-    res.json({
-        message: 'Teams endpoint is ready',
-        endpoint: endpoints.teams,
-        baseUrl,
-    });
+app.get('/api/teams/', async (_req, res) => {
+    try {
+        const payload = await readCollection(Team, 'teams');
+        res.json(payload);
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Unable to load teams.', details: String(error) });
+    }
 });
-app.get('/api/activities/', (_req, res) => {
-    res.json({
-        message: 'Activities endpoint is ready',
-        endpoint: endpoints.activities,
-        baseUrl,
-    });
+app.get('/api/activities/', async (_req, res) => {
+    try {
+        const payload = await readCollection(Activity, 'activities');
+        res.json(payload);
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Unable to load activities.', details: String(error) });
+    }
 });
-app.get('/api/leaderboard/', (_req, res) => {
-    res.json({
-        message: 'Leaderboard endpoint is ready',
-        endpoint: endpoints.leaderboard,
-        baseUrl,
-    });
+app.get('/api/leaderboard/', async (_req, res) => {
+    try {
+        const payload = await readCollection(LeaderboardEntry, 'leaderboard');
+        res.json(payload);
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Unable to load leaderboard.', details: String(error) });
+    }
 });
-app.get('/api/workouts/', (_req, res) => {
-    res.json({
-        message: 'Workouts endpoint is ready',
-        endpoint: endpoints.workouts,
-        baseUrl,
-    });
+app.get('/api/workouts/', async (_req, res) => {
+    try {
+        const payload = await readCollection(Workout, 'workouts');
+        res.json(payload);
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Unable to load workouts.', details: String(error) });
+    }
 });
 export default app;
