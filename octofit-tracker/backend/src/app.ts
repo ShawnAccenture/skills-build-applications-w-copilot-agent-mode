@@ -1,8 +1,10 @@
 import express from 'express';
+import cors from 'cors';
 import './config/database.js';
 import { Activity, LeaderboardEntry, Team, User, Workout } from './models.js';
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 const codespaceName = process.env.CODESPACE_NAME;

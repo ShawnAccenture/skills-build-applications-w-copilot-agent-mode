@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { getApiUrl, normalizeCollection } from '../utils/api';
 
+const endpoint = getApiUrl('leaderboard');
+
 function Leaderboard() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,7 +13,7 @@ function Leaderboard() {
 
     async function fetchLeaderboard() {
       try {
-        const response = await fetch(getApiUrl('leaderboard'), { signal: controller.signal });
+        const response = await fetch(endpoint, { signal: controller.signal });
         const data = await response.json();
 
         if (!response.ok) {

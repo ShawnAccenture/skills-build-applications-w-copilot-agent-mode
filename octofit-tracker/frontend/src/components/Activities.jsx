@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { getApiUrl, normalizeCollection } from '../utils/api';
 
+const endpoint = getApiUrl('activities');
+
 function Activities() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,7 +13,7 @@ function Activities() {
 
     async function fetchActivities() {
       try {
-        const response = await fetch(getApiUrl('activities'), { signal: controller.signal });
+        const response = await fetch(endpoint, { signal: controller.signal });
         const data = await response.json();
 
         if (!response.ok) {

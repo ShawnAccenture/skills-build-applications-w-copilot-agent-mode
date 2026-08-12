@@ -1,7 +1,7 @@
 export function getApiBaseUrl() {
   const codespaceName = import.meta.env?.VITE_CODESPACE_NAME;
 
-  if (codespaceName && codespaceName.trim()) {
+  if (typeof codespaceName === 'string' && codespaceName.trim()) {
     return `https://${codespaceName.trim()}-8000.app.github.dev`;
   }
 
@@ -9,7 +9,8 @@ export function getApiBaseUrl() {
 }
 
 export function getApiUrl(resource) {
-  return `${getApiBaseUrl()}/api/${resource}/`;
+  const normalizedResource = String(resource || '').replace(/^\/+|\/+$/g, '');
+  return `${getApiBaseUrl()}/api/${normalizedResource}/`;
 }
 
 export function normalizeCollection(payload) {

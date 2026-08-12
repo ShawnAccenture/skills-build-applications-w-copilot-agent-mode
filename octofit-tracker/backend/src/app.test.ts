@@ -25,4 +25,13 @@ describe('OctoFit Tracker API', () => {
       expect(response.body.endpoint).toBe(endpoint);
     }
   });
+
+  it('includes CORS headers for frontend requests', async () => {
+    const response = await request(app)
+      .get('/api/users/')
+      .set('Origin', 'http://localhost:5173');
+
+    expect(response.status).toBe(200);
+    expect(response.headers['access-control-allow-origin']).toBe('*');
+  });
 });
